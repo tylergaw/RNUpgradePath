@@ -143,6 +143,32 @@ Ran all test suites.
 ✨  Done in 1.65s.
 ```
 
+## Issue 4:
+
+**Note**: This didn't happen in this project, but did in another RN project that I was upgrading from RN 0.54.x.
+
+When attempting to start the Metro bundler with `yarn start`, I got:
+
+```bash
+Error: Unable to resolve module `regenerator-runtime/runtime` from `/Users/gcred/workspace/streetcred/app/node_modules/react-native/Libraries/Core/InitializeCore.js`: Module `regenerator-runtime/runtime` does not exist in the Haste module map
+
+This might be related to https://github.com/facebook/react-native/issues/4968
+
+To resolve try the following:
+  1. Clear watchman watches: `watchman watch-del-all`.
+  2. Delete the `node_modules` folder: `rm -rf node_modules && npm install`.
+  3. Reset Metro Bundler cache: `rm -rf /tmp/metro-bundler-cache-*` or `npm start -- --reset-cache`.
+  4. Remove haste cache: `rm -rf /tmp/haste-map-react-native-packager-*`.
+```
+
+I followed those four steps, but the problem persisted. I took a look in my local `node_modules` folder and noticed there was not a `regenerator-runtime` directory. When running `npm ls` I also noticed a few other warnings about missing peer dependencies. With that, I guessed that my `yarn.lock` and/or `package-lock.json` files were stale, so I:
+
+1. Deleted `yarn.lock` and `package-lock.json`
+2. `rm -rf node_modules`
+3. `yarn && npm i`
+
+That reinstalled the dependencies and regenerated the lock files. After that, `yarn start` works as normal.
+
 ---------------------------------------
 
 ## Jest / Class fat arrow methods:

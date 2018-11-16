@@ -107,3 +107,36 @@ Ran all test suites.
 error Command failed with exit code 1.
 info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
 ```
+
+The error message here is not so helpful, but issue seems to be static class properties. This took a good bit of searching to find and it seems like it's pretty widespread. [This comment](https://github.com/facebook/react-native/issues/19859#issuecomment-407748189) has a fix that worked for me.
+
+On that advice, I added the `transform` key to my `jest` config in `package.json`:
+
+```json
+...
+"jest": {
+  "preset": "react-native",
+  "transform": {
+    "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+  }
+}
+...
+```
+
+Once again `yarn test`. This time all tests pass as expected.
+
+```
+# yarn test
+yarn run v1.12.3
+$ jest
+ PASS  components/__tests__/Button.test.js
+  Button
+    ✓ renders correctly with props (279ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   1 passed, 1 total
+Time:        0.95s, estimated 5s
+Ran all test suites.
+✨  Done in 1.65s.
+```

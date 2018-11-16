@@ -34,7 +34,7 @@ yarn test
 
 ## Issue 1:
 
-```
+```bash
 # yarn test
 yarn run v1.12.3
 $ jest
@@ -74,7 +74,7 @@ yarn test
 
 ## Issue 2:
 
-```
+```bash
 # yarn test
 yarn run v1.12.3
 $ jest
@@ -127,7 +127,7 @@ On that advice, I added the `transform` key to my `jest` config in `package.json
 
 Once again `yarn test`. This time all tests pass as expected.
 
-```
+```bash
 # yarn test
 yarn run v1.12.3
 $ jest
@@ -142,3 +142,78 @@ Time:        0.95s, estimated 5s
 Ran all test suites.
 ✨  Done in 1.65s.
 ```
+
+---------------------------------------
+
+## Jest / Class fat arrow methods:
+
+This isn't directly related to the RN upgrade, but I hit it in this process so including it here just in case.
+
+I often make use of autobinding class methods in React components. I'm not sure what the correct name is and I can't find a durn spec for it. But, using a fat arrow when defining a class method to make sure `this` refers to the parent class instead of whomever invoked the method.
+
+In this example, I've updated the `App` component to include one of these methods.
+
+```javascript
+class App extends PureComponent {
+  doWork = () => {
+    console.log("This doesn't do anything. Writing this function to make sure fat arrow class methods work. Narrator: They don't work");
+  }
+
+  render() {
+    return <Home />;
+  }
+}
+```
+
+The app still runs in the simulator but, tests now fail:
+
+```bash
+# yarn test
+yarn run v1.12.3
+$ jest
+ FAIL  __tests__/App.test.js
+  ● Console
+
+    console.error node_modules/react-test-renderer/cjs/react-test-renderer.development.js:8060
+      The above error occurred in the <App> component:
+          in App (at App.test.js:7)
+
+      Consider adding an error boundary to your tree to customize error handling behavior.
+      Visit https://fb.me/react-error-boundaries to learn more about error boundaries.
+
+  ● App › renders correctly
+
+    TypeError: Cannot read property 'default' of undefined
+
+      2 | import { Home } from "Screens";
+      3 |
+    > 4 | class App extends PureComponent {
+        |                                                                          ^
+      5 |   doWork = () => {
+      6 |     console.log("This doesn't do anything. Writing this function to make sure fat arrow class methods work.")
+      7 |   }
+
+      at new App (App.js:4:383)
+      at constructClassInstance (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4810:18)
+      at updateClassComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:6579:5)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7413:16)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10138:12)
+      at workLoop (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10170:24)
+      at renderRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:10256:7)
+      at performWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11121:7)
+      at performWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11033:7)
+      at performSyncWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11007:3)
+
+ PASS  components/Screens/__tests__/Home.test.js
+ PASS  components/Patterns/__tests__/Button.test.js
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   2 passed, 2 total
+Time:        1.216s
+Ran all test suites.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+```
+
+**NOTE: I have not found a way around this yet and it's killing me, halp**

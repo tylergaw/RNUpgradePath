@@ -143,7 +143,7 @@ Ran all test suites.
 ✨  Done in 1.65s.
 ```
 
-## Issue 4:
+## Issue 3:
 
 **Note**: This didn't happen in this project, but did in another RN project that I was upgrading from RN 0.54.x.
 

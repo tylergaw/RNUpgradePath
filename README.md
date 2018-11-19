@@ -177,8 +177,6 @@ I followed those four steps, but the problem persisted. I took a look in my loca
 
 That reinstalled the dependencies and regenerated the lock files. After that, `yarn start` works as normal.
 
----------------------------------------
-
 ## Issue 4:
 
 Any code with class properties–including class methods bound with fat arrows (these get compiled to class props)–will cause Jest tests to fail.

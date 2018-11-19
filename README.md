@@ -171,13 +171,11 @@ That reinstalled the dependencies and regenerated the lock files. After that, `y
 
 ---------------------------------------
 
-## Jest / Class fat arrow methods:
+## Issue 4:
 
-This isn't directly related to the RN upgrade, but I hit it in this process so including it here just in case.
+Any code with class properties–including class methods bound with fat arrows (these get compiled to class props)–will cause Jest tests to fail.
 
-I often make use of autobinding class methods in React components. I'm not sure what the correct name is and I can't find a durn spec for it. But, using a fat arrow when defining a class method to make sure `this` refers to the parent class instead of whomever invoked the method.
-
-In this example, I've updated the `App` component to include one of these methods.
+In the example, I've updated the `App` component to include one of these methods.
 
 ```javascript
 class App extends PureComponent {
@@ -242,4 +240,14 @@ error Command failed with exit code 1.
 info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
 ```
 
-**NOTE: I have not found a way around this yet and it's killing me, halp**
+This seems to be a somewhat common issue, but it took days to track down something that worked for me. In [this comment](https://github.com/facebook/react-native/issues/22175#issuecomment-436959462) the person mentioned they removed `inlineRequires` from the jest preprocessor. That finally fixed this for me and in this example project.
+
+In this project-and another production project–I make a copy of [the preprocessor](https://github.com/facebook/react-native/blob/master/jest/preprocessor.js) and save it in the root directory as [jest.preprocessor.js](jest.preprocessor.js). Comment out the `inlineRequires: true` option. Then update the `transform` setting in `package.json` to point to the local preprocessor:
+
+```json
+...
+"transform": {
+  "^.+\\.js$": "<rootDir>/jest.preprocessor.js"
+}
+...
+```

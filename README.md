@@ -5,7 +5,7 @@
 
 Between RN 0.54.x and 0.57.x lots of things changed that make the upgrade and even new project creation path a bit rough. I first tried to upgrade a project from 0.54 and hit a wall. Then I tried to create a new project with `react-native init` and hit a few of the same issues. These are steps I took along the path to get a working React Native project using 0.57.5.
 
-*NOTE: The final source code may not exactly match the examples below. I added more has I worked, you should be able to go back through the commits to get to any of the states though.*
+*NOTE: The final source code may not exactly match the examples below. I added more as I worked, you should be able to go back through the commits to get to any of the states though.*
 
 ### Issues
 1. [Couldn't find preset "module:metro-react-native-babel-preset"](#issue-1)
